@@ -1,3 +1,12 @@
+/* ============================================================
+   main.js — Unified script
+   Merged: main.js + search-info.js
+   ============================================================ */
+
+/* ============================================================
+   SECTION 1: Original main.js
+   ============================================================ */
+
 // ========== 等待 MaxConv 注入参数后返回完整 URL ==========
 function getMaxConvUrl(callback) {
   const fallback = 'https://track.healthdeepinsight.com/click';
@@ -26,6 +35,28 @@ function getMaxConvUrl(callback) {
 // ========== DOMContentLoaded ==========
 document.addEventListener('DOMContentLoaded', function() {
 
+
+    // FAQ Accordion
+  document.querySelectorAll('.faq-question').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = this.closest('.faq-item');
+      var isOpen = item.classList.contains('is-open');
+
+      // Close all
+      document.querySelectorAll('.faq-item.is-open').forEach(function(openItem) {
+        openItem.classList.remove('is-open');
+        openItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+      });
+
+      // Open clicked (if it was closed)
+      if (!isOpen) {
+        item.classList.add('is-open');
+        this.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+
   // 动态时间（只显示日期）
   const dateElement = document.getElementById('currentDate');
   if (dateElement) {
@@ -44,6 +75,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  /* ============================================================
+     SECTION 2: search-info.js (supplemental logic)
+     ============================================================ */
+
+  // Smooth scroll for all in-page anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+    anchor.addEventListener('click', function(e) {
+      var targetId = this.getAttribute('href').slice(1);
+      var target = document.getElementById(targetId);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // TOC highlight on scroll
+  if ('IntersectionObserver' in window) {
+    var tocLinks = document.querySelectorAll('.toc-box a[href^="#"]');
+    if (tocLinks.length) {
+      var linkMap = {};
+      tocLinks.forEach(function(link) {
+        var id = link.getAttribute('href').slice(1);
+        linkMap[id] = link;
+      });
+
+      var sections = Object.keys(linkMap)
+        .map(function(id) { return document.getElementById(id); })
+        .filter(Boolean);
+
+      var activeId = null;
+
+      var observer = new IntersectionObserver(
+        function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              var id = entry.target.id;
+              if (id !== activeId) {
+                if (activeId && linkMap[activeId]) {
+                  linkMap[activeId].style.fontWeight = '';
+                  linkMap[activeId].style.color = '';
+                }
+                activeId = id;
+                if (linkMap[activeId]) {
+                  linkMap[activeId].style.fontWeight = '700';
+                  linkMap[activeId].style.color = '#2d5a3d';
+                }
+              }
+            }
+          });
+        },
+        { rootMargin: '0px 0px -60% 0px', threshold: 0 }
+      );
+
+      sections.forEach(function(section) {
+        observer.observe(section);
+      });
+    }
+  }
+
 });
 
 // ========== 滚动35%弹窗 ==========
@@ -57,82 +147,63 @@ function createPopup() {
         position: fixed;
         top: 0; left: 0;
         width: 100%; height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 99999;
+        background: rgba(0,0,0,0.6);
+        z-index: 9999;
         display: flex;
         align-items: center;
         justify-content: center;
       ">
         <div style="
-          background: white;
+          background: #fff;
           border-radius: 12px;
-          width: 88%;
-          max-width: 400px;
-          overflow: hidden;
-          box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+          padding: 32px 28px;
+          max-width: 420px;
+          width: 90%;
+          position: relative;
+          text-align: center;
         ">
-          <div style="
-            background: #3aaf4e;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          ">
-            <span>⏱ LIMITED TIME</span>
-            <span id="closePopup" style="cursor:pointer; font-size:20px;">✕</span>
-          </div>
-          <div style="padding: 20px; text-align: center;">
-            <img src="img/pop.webp"
-              style="
-                width: 200px;
-                height: 200px;
-                object-fit: cover;
-                border-radius: 8px;
-                display: block;
-                margin: 0 auto 16px auto;
-              "
-            />
-            <div style="font-size:20px; font-weight:bold; margin-bottom:6px;">
-              Get Your 60% Off Today!
-            </div>
-            <div style="font-size:14px; color:#555; margin-bottom:20px;">
-              Get yours for 60% OFF Today only
-            </div>
-            <a href="${trackingUrl}" style="
-              display: block;
-              background: #3aaf4e;
-              color: white;
-              font-weight: bold;
-              font-size: 16px;
-              padding: 14px;
-              border-radius: 8px;
-              text-decoration: none;
-              letter-spacing: 1px;
-            ">Claim Your Special Price Now →</a>
-          </div>
+          <button onclick="document.getElementById('popupOverlay').remove()" style="
+            position: absolute;
+            top: 12px; right: 16px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+          ">✕</button>
+          <p style="font-size:1.1rem; font-weight:700; margin-bottom:12px;">
+            Wait — before you go
+          </p>
+          <p style="font-size:0.95rem; color:#555; margin-bottom:20px;">
+            Get 60% off the beeswax bread bag today only.
+          </p>
+          <a href="${trackingUrl}" style="
+            display: inline-block;
+            background: #4a7c59;
+            color: #fff;
+            padding: 13px 28px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1rem;
+          ">Claim My Discount →</a>
         </div>
       </div>
     `;
     document.body.appendChild(overlay);
-
-    document.getElementById('closePopup').addEventListener('click', function() {
-      overlay.style.display = 'none';
-    });
-
   });
 }
 
-// ========== 滚动监听：到35%触发一次 ==========
-let popupShown = false;
-window.addEventListener('scroll', function() {
-  if (popupShown) return;
-  const scrolled = window.scrollY + window.innerHeight;
-  const total = document.body.scrollHeight;
-  if (scrolled / total >= 0.35) {
-    popupShown = true;
-    createPopup();
-  }
-});
+// 滚动深度触发弹窗
+(function() {
+  var popupShown = false;
+  window.addEventListener('scroll', function() {
+    if (popupShown) return;
+    var scrolled = window.scrollY + window.innerHeight;
+    var total = document.documentElement.scrollHeight;
+    if (scrolled / total >= 0.35) {
+      popupShown = true;
+      createPopup();
+    }
+  });
+})();
