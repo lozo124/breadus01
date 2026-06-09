@@ -571,22 +571,26 @@ body {
 .product-cta-body {
   display: flex;
   gap: 28px;
-  align-items: center;        /* 垂直居中 */
+  align-items: center;
+  justify-content: center;
 }
 
 .product-cta-image {
-  flex: 0 0 50%;              /* 各占50% */
+  flex: 0 0 50%;
   max-width: 50%;
+  display: flex;
+  justify-content: center;
 }
 
 .product-cta-image img {
   width: 100%;
+  max-width: 100%;
   border-radius: 8px;
   display: block;
 }
 
 .product-cta-text {
-  flex: 0 0 50%;              /* 各占50% */
+  flex: 0 0 50%;
   max-width: 50%;
 }
 
@@ -674,7 +678,11 @@ body {
     flex-direction: column;
     align-items: stretch;
   }
-  .product-cta-image,
+  .product-cta-image {
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
+  }
   .product-cta-text {
     flex: none;
     max-width: 100%;
@@ -682,123 +690,6 @@ body {
   }
 }
 
-
-.product-cta-badge {
-  display: inline-block;
-  background: #e63946;
-  color: #fff;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 4px 12px;
-  border-radius: 4px;
-  margin-bottom: 18px;
-}
-
-.product-cta-body {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-}
-
-.product-cta-image {
-  flex-shrink: 0;
-  width: 140px;
-}
-
-.product-cta-image img {
-  width: 100%;
-  border-radius: 6px;
-}
-
-.product-cta-text {
-  flex: 1;
-}
-
-.product-cta-text h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 6px;
-}
-
-.product-cta-tagline {
-  font-size: 0.92rem !important;
-  color: #555;
-  margin: 0 0 14px !important;
-  font-style: italic;
-}
-
-.product-cta-bullets {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 16px;
-}
-
-.product-cta-bullets li {
-  font-size: 0.9rem;
-  color: #2c2c2c;
-  margin-bottom: 5px;
-  line-height: 1.5;
-}
-
-.product-cta-price {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.price-original {
-  font-size: 1rem;
-  color: #999;
-  text-decoration: line-through;
-}
-
-.price-current {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #2d5a3d;
-}
-
-.price-note {
-  font-size: 0.82rem;
-  color: #666;
-}
-
-.product-cta-button {
-  display: inline-block;
-  background: #4a7c59;
-  color: #fff;
-  padding: 14px 28px;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.2s;
-  margin-bottom: 10px;
-}
-
-.product-cta-button:hover {
-  background: #2d5a3d;
-}
-
-.product-cta-urgency {
-  font-size: 0.82rem;
-  color: #888;
-  margin: 0 !important;
-}
-
-@media (max-width: 600px) {
-  .product-cta-body {
-    flex-direction: column;
-  }
-  .product-cta-image {
-    width: 100%;
-    max-width: 200px;
-  }
-}
 
 /* ----------------------------------------------------------
    FAQ Accordion
